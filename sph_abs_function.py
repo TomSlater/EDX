@@ -9,6 +9,7 @@ import numpy as np
 import scipy as sp
 import pylab as pl
 
+#Function to calculate X-ray absorption of one X-ray peak in a spherical nanoparticle
 def sph_absorption(r, p, mass_atten, ang=0, u=0, v=0):
     r_m = ((r**2)-(v**2))**0.5
     t = 2*(r_m**2-u**2)**0.5
@@ -17,17 +18,21 @@ def sph_absorption(r, p, mass_atten, ang=0, u=0, v=0):
     
     i_1 = lambda z: np.exp(A_1*((r_m**2-(z-0.5*t+u*np.tan(ang))**2*np.cos(ang)**2)**0.5-u*np.cos(ang)-(0.5*t-z)*np.sin(ang)))
     
+    #Numerically integrate equation i_1 using the quad function
     result, error = sp.integrate.quad(i_1, 0, t)
     I_1 = result
     
     return(I_1)
     
+'''Function to calculate the ACF between two X-ray peaks in a spherical particle
+with the ability to use up to four detectors at 90 degrees to each other'''
 def sph_ACF(r, p, mass_atten1, mass_atten2, ang=0, u=0, v=0, det1=True, det2=False, det3=False, det4=False):
+    
+    #Set prefactors for each detector
     det1fac = 0
     det2fac = 0
     det3fac = 0
     det4fac = 0
-        
     if det1 == True:
         det1fac = 1
     if det2 == True:
